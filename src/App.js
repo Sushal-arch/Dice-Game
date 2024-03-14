@@ -43,11 +43,7 @@ export default function App() {
         }
       }
       setRollClicked(true);
-      if (totalScore1 >= 10 || totalScore2 >= 10) {
-        setIsGameOver(true);
-      }
     }
-    console.log("Is game over?", isGameOver);
   }
 
   function handleHoldDice() {
@@ -57,18 +53,23 @@ export default function App() {
         setCurrentScoreP1(0);
         setIsActive1(false);
         setIsActive2(true);
+        if (totalScore1 >= 10) setIsGameOver(true);
       }
       if (isActive2) {
         setTotalScore2((t) => t + currentScoreP2);
         setCurrentScoreP2(0);
         setIsActive2(false);
         setIsActive1(true);
+        if (totalScore2 >= 10) setIsGameOver(true);
       }
-      if (totalScore1 >= 10 || totalScore2 >= 10) {
+      // state updates using useState are asynchronous,When you call setTotalScore1 or setTotalScore2, React schedules an update to the state, but it doesn't happen immediately. This means that the value of totalScore1 or totalScore2 won't be updated immediately after calling setTotalScore1 or setTotalScore2. arkochoti ma balla hunxa
+      // yo hunxa kina ki yo asynchronous operation ho setTotalScore1((t) => t + currentScoreP1); but setTotalScore1(1) synchronous ho
+      if (
+        totalScore1 + currentScoreP1 >= 10 ||
+        totalScore2 + currentScoreP2 >= 10
+      )
         setIsGameOver(true);
-      }
     }
-    console.log("Is game over?", isGameOver);
   }
 
   function handleNewGame() {
@@ -105,7 +106,7 @@ export default function App() {
       <Button
         positionClass="roll--btn"
         onClick={handleRollDice}
-        // disabled={isGameOver}
+        disabled={isGameOver}
       >
         🎲 Roll dice
       </Button>
@@ -113,7 +114,7 @@ export default function App() {
       <Button
         positionClass="hold--btn"
         onClick={handleHoldDice}
-        // disabled={isGameOver}
+        disabled={isGameOver}
       >
         📥 Hold
       </Button>
