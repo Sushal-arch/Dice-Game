@@ -23,48 +23,52 @@ export default function App() {
 
   function handleRollDice() {
     const RandomIndex = Math.floor(Math.random() * Images.length);
-    if (isGameOver) return;
-    if (isActive1) {
-      setImage(Images[RandomIndex]);
-      setCurrentScoreP1((r) => r + RandomIndex + 1);
-      if (RandomIndex === 0) {
-        setIsActive1(false);
-        setCurrentScoreP1(0);
-        setIsActive2(true);
+    if (!isGameOver) {
+      if (isActive1) {
+        setImage(Images[RandomIndex]);
+        setCurrentScoreP1((r) => r + RandomIndex + 1);
+        if (RandomIndex === 0) {
+          setIsActive1(false);
+          setCurrentScoreP1(0);
+          setIsActive2(true);
+        }
+      }
+      if (isActive2) {
+        setImage(Images[RandomIndex]);
+        setCurrentScoreP2((r) => r + RandomIndex + 1);
+        if (RandomIndex === 0) {
+          setIsActive2(false);
+          setCurrentScoreP2(0);
+          setIsActive1(true);
+        }
+      }
+      setRollClicked(true);
+      if (totalScore1 >= 10 || totalScore2 >= 10) {
+        setIsGameOver(true);
       }
     }
-    if (isActive2) {
-      setImage(Images[RandomIndex]);
-      setCurrentScoreP2((r) => r + RandomIndex + 1);
-      if (RandomIndex === 0) {
-        setIsActive2(false);
-        setCurrentScoreP2(0);
-        setIsActive1(true);
-      }
-    }
-    setRollClicked(true);
-    if (totalScore1 >= 10 || totalScore2 >= 10) {
-      setIsGameOver(true);
-    }
+    console.log("Is game over?", isGameOver);
   }
 
   function handleHoldDice() {
-    if (isGameOver) return;
-    if (isActive1) {
-      setTotalScore1((t) => t + currentScoreP1);
-      setCurrentScoreP1(0);
-      setIsActive1(false);
-      setIsActive2(true);
+    if (!isGameOver) {
+      if (isActive1) {
+        setTotalScore1((t) => t + currentScoreP1);
+        setCurrentScoreP1(0);
+        setIsActive1(false);
+        setIsActive2(true);
+      }
+      if (isActive2) {
+        setTotalScore2((t) => t + currentScoreP2);
+        setCurrentScoreP2(0);
+        setIsActive2(false);
+        setIsActive1(true);
+      }
+      if (totalScore1 >= 10 || totalScore2 >= 10) {
+        setIsGameOver(true);
+      }
     }
-    if (isActive2) {
-      setTotalScore2((t) => t + currentScoreP2);
-      setCurrentScoreP2(0);
-      setIsActive2(false);
-      setIsActive1(true);
-    }
-    if (totalScore1 >= 10 || totalScore2 >= 10) {
-      setIsGameOver(true);
-    }
+    console.log("Is game over?", isGameOver);
   }
 
   function handleNewGame() {
@@ -98,14 +102,18 @@ export default function App() {
       <Button positionClass="new--btn" onClick={handleNewGame}>
         🔄 New game
       </Button>
-      <Button positionClass="roll--btn" onClick={handleRollDice}>
+      <Button
+        positionClass="roll--btn"
+        onClick={handleRollDice}
+        // disabled={isGameOver}
+      >
         🎲 Roll dice
       </Button>
 
       <Button
         positionClass="hold--btn"
-        onClick={isGameOver ? undefined : handleHoldDice}
-        disabled={isGameOver}
+        onClick={handleHoldDice}
+        // disabled={isGameOver}
       >
         📥 Hold
       </Button>
